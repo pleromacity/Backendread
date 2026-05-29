@@ -21,7 +21,7 @@ app.use(morgan('combined'));
 app.use(requestLogger);
 
 // Routes
-app.use('/health', healthRouter);
+app.use('/api/health', healthRouter)
 app.use('/api/books', booksRouter);
 app.use('/api/books', uploadRouter);
 
