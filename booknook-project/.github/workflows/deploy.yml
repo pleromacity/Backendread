@@ -1,0 +1,44 @@
+name: Build and Deploy BookNook
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. Checkout ───────────────────────────────────────────────────────────
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # ── 2. Set up Node ────────────────────────────────────────────────────────
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # ── 3. Install dependencies ───────────────────────────────────────────────
+      - name: Install dependencies
+        run: npm ci --omit=dev
+
+      # ── 4. Run tests (if any exist) ───────────────────────────────────────────
+      - name: Run tests
+        run: npm test --if-present
+
+      # ── 5. Zip for deployment ─────────────────────────────────────────────────
+      - name: Create deployment package
+        run: zip -r deploy.zip . -x "*.git*" -x "node_modules/.*"
+
+      # ── 6. Deploy to Azure App Service ───────────────────────────────────────
+      #  AZURE_WEBAPP_PUBLISH_PROFILE is a repo secret. Download it from the
+      #  App Service blade → "Get publish profile" and paste the XML content.
+      - name: Deploy to Azure App Service
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ vars.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: deploy.zip
