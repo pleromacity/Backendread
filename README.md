@@ -73,7 +73,7 @@ booknook/
 
 | Method | Path | Description |
 |--------|------|-------------|
-| `GET` | `/health` | Health check — confirms DB connectivity |
+| `GET` | `/api/health` | Health check — confirms DB connectivity |
 | `GET` | `/api/books` | List all books. Optional `?status=` and `?genre=` filters |
 | `GET` | `/api/books/:id` | Get a single book |
 | `POST` | `/api/books` | Add a new book |
@@ -271,7 +271,7 @@ Go to the **Actions** tab in your GitHub repo and watch the workflow run. It tak
 
 **Health check:**
 ```bash
-curl https://booknook-api-XXXXXXXX.azurewebsites.net/health
+curl https://booknook-api-XXXXXXXX.azurewebsites.net/api/health
 ```
 
 Expected response:
